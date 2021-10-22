@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH></FILEPATH>
+      <FILENAME></FILENAME>
+      <LINE>0</LINE>
+      <COLUMN>0</COLUMN>
+    </SFA>
+    <DEFECTCODE>6800</DEFECTCODE>
+    <DESCRIPTION>Файл набора правил, указанный с помощью параметра /analyze:ruleset или /analyze:external:ruleset, не удалось проанализировать. Он будет пропущен.</DESCRIPTION>
+    <FUNCTION></FUNCTION>
+    <DECORATED></DECORATED>
+    <FUNCLINE>0</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>
