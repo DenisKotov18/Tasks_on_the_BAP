@@ -55,7 +55,7 @@ int main()
 		{
 			for (int i = 0; i <= (n - 1); i++)
 			{
-				cout << " Введите " << (i + 1) << "-й член массива";
+				cout << " Введите " << (i + 1) << "-й член массива" << endl;
 				arr[i] = check();
 			}
 			break;
@@ -71,21 +71,38 @@ int main()
 	}
 	int max = arr[0];
 	int max_num = 0;
+	cout << arr[0];
 	for (int i = 1; i <= (n - 1); i++)
 	{
-		cout << arr[i]<<endl;
+		cout << arr[i] << " ";
 		if (arr[i] > max)
 		{
 			max = arr[i];
 			max_num = i;
 		}
 	}
+	cout << endl;
 	int sum = 0;
-	for (int i = 0; i < max_num; i++)
+	if (max == 0)
 	{
-		if (arr[i]>0) sum += arr[i];
+		cout << endl << " Все элементы массива меньше или равны 0. ";
+	}
+	else
+	{
+		if (max_num == 0)
+		{
+			cout << endl << " Наибольший элемент является первым в массиве. " << endl;
+		}
+		else
+		{
+			for (int i = 0; i < max_num; i++)
+			{
+				if (arr[i] > 0) sum += arr[i];
+			}
+
+			cout << endl << " Сумма положительных элементов массива до наибольшего = " << sum << endl;
+		}
 	}
 	delete[]arr;
-	cout << endl <<" Сумма положительных элементов массива до наибольшего равно -"<< sum;
 	return 0;
 }
