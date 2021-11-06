@@ -2,25 +2,7 @@
 #include <cmath>
 #include <clocale>
 using namespace std;
-double check()
-{
-	while (true)
-	{
-		double z;
-		cin >> z;
-		if (std::cin.fail() == 1)
-		{
-			cin.clear();
-			cin.ignore(32767, '\n');
-			std::cout << " Вы ввели некорректное число, попробуйте ещё раз." << endl;
-		}
-		else
-		{
-			cin.ignore(32767, '\n');
-			return z;
-		}
-	}
-}
+double check();
 int main()
 {
 	setlocale(LC_ALL, "Russian");
@@ -104,4 +86,23 @@ int main()
 		break;
 	}
 	system("pause");
+}
+double check()
+{
+	while (true)
+	{
+		double z;
+		cin >> z;
+		if (std::cin.fail() == 1)
+		{
+			cin.clear();
+			cin.ignore(32767, '\n');
+			std::cout << " Вы ввели некорректное значение, попробуйте ещё раз." << endl;
+		}
+		else
+		{
+			cin.ignore(32767, '\n');
+			return z;
+		}
+	}
 }
