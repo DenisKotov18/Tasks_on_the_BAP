@@ -5,17 +5,25 @@ using namespace std;
 
 void menu();
 double getDouble(int);
-struct Queue* order(Queue*&, Queue*&);
-void createNew(Queue*&, Queue*&, int);
+struct Queue* &order(Queue*&, Queue*&);
+Queue*& linkUpdate(Queue*&, Queue*&);
+Queue*& reverseLinkUpdate(Queue*&, Queue*&);
+void linkPart(Queue* const &, Queue*&, Queue*&, Queue*&);
+void createNew( Queue*&, Queue*&, int);
 void showStack(Queue*);
-void garbageCollector(Queue*);
-
+void displayOrder(Queue*&, Queue*&);
+void delEvery2(Queue*, Queue*&, Queue*&);
+void garbageCollector(Queue*&);
+//void test(int*&);
 
 const char CONF_EXIT[] = " Вы уверены, что хотите выйти?";
 const char MENU_INFO[] = "	 Добро пожаловать!\n	Что вы хотите сделать?\n 1) Вывести список \n 2) Добавить новые элементы\n 3) Удалить каждый 2 элемент\n ESC-назад";
 const char EMPTY[] = " Список пуст.";
+const char SHOW_TO[] = "С какого элемента показать список?\n 1) С первого\n 2) С последнего";
 const char INPUT_AMT[] = " Сколько элементов будем добавлять?";
 const char INPUT_INFO[] = " Введите значение элемента - ";
+const char INPUT_TO[] = "  В какую часть списка добавить?\n 1) В начало\n 2) В конец";
+const char DEL_TO[] = "  Откуда начинать удаление?\n 1) С начала списка\n 2) С конца списка";
 const char CONFIRM[] = " Вы уверены, что хотите совершить это необратимое действие? \n 1) Да. \n 2) НЕТ.";
 const char DONE[] = " Готово!";
 const char ERR_DEL[] = " Нечего удалять!";
@@ -26,7 +34,6 @@ struct Queue
 	Queue* next,* prev;
 };
 
-
 void main()
 {
 	setlocale(LC_ALL, "RUSSIAN");
@@ -34,11 +41,18 @@ void main()
 	system("pause");
 }
 
+//void test(int *&link)
+//{
+//	int a = 9;
+//	link = &a;
+//}
+
 void menu()
 {
 	Queue* begin = NULL, *end = NULL;
 	bool exit_flag = false;
 	char switcher = NULL;
+	//test(order(begin, end));
 	while (exit_flag == false)
 	{
 		system("cls");
@@ -49,7 +63,11 @@ void menu()
 		case '1':
 		{
 			system("cls");
-			if (begin) showStack(begin);
+			if (begin)
+			{
+				cout << SHOW_TO << endl;
+				showStack(order(begin, end));
+			}
 			else cout << EMPTY << endl;
 			system("pause");
 			system("cls");
@@ -60,7 +78,7 @@ void menu()
 			system("cls");
 			cout << INPUT_AMT << endl;
 			int num = getDouble(1);
-			begin = createNew(begin, num);
+			createNew(begin, end, num);
 			break;
 		}
 		case '3':
@@ -72,7 +90,8 @@ void menu()
 			{
 				if ((begin) && (begin->next))
 				{
-					delEvery2(begin);
+					cout << DEL_TO << endl;
+					delEvery2(order(begin, end), begin, end);
 					cout << DONE << endl;
 				}
 				else cout << ERR_DEL << endl;
@@ -90,25 +109,94 @@ void menu()
 	garbageCollector(begin);
 }
 
-Queue* order(Queue*& begin, Queue*& end)
+Queue*& order(Queue*& begin, Queue*& end)
 {
 	char choise = _getch();
 	while (choise <'1' || choise > '2') choise = _getch();
-	return (choise == '1') ? begin : end;
+	return (choise == '1') ? begin: end;
+}
+
+void linkPart(Queue* const & elem, Queue*& use_elem, Queue*& choise, Queue*& choise_link)
+{
+	use_elem = choise;
+	choise_link = elem;
+	choise = elem;
+}
+
+void showStack(Queue* begin)
+{
+	system("cls");
+	Queue* elem = begin; 
+	int i = 1;
+	while (elem)
+	{
+		cout << ' ' << i << ") " << elem->info << endl;
+		elem = linkUpdate(begin, elem);
+		i++;
+	}
 }
 
 void createNew(Queue*& begin, Queue*& end, int num)
 {
-	Queue* n_elem = NULL;
+	Queue* n_elem = NULL, * choise = NULL;
 	for (int i = 0; i < num; i++)
 	{
 		n_elem = new Queue;
+		cout << endl << INPUT_INFO;
 		n_elem->info = getDouble(1);
-
-		n_elem->next = NULL;
+		n_elem->prev = n_elem->next = NULL;
 		if (!begin) begin = end = n_elem;
-		else end->next = n_elem;
-		end = n_elem;
+		else
+		{
+			cout << endl << INPUT_TO << endl;
+			choise = order(begin, end);
+			(!choise->prev) ? linkPart(n_elem, n_elem->next, choise, choise->prev) : linkPart(n_elem, n_elem->prev, choise, choise->next);
+		}
+	}
+}
+
+void delEvery2(Queue* start, Queue*& begin, Queue*& end)
+{
+	Queue* elem = start, * d_elem = NULL, *next_elem = NULL,* next_next_elem = NULL;
+	int i = 1;
+	
+		while (elem)
+		{
+			next_elem = linkUpdate(start, elem);
+			next_next_elem = linkUpdate(start, next_elem);
+			if (((i % 2) != 0) && (next_elem))
+			{
+				reverseLinkUpdate(start, next_next_elem) = elem;
+				linkUpdate(start, elem) = next_next_elem;
+				d_elem = next_elem;
+				next_elem= next_next_elem;
+				delete d_elem;
+				i++;
+			}
+			elem = next_elem;
+			i++;
+			if (!next_elem) (!start->prev) ? end = elem : begin = elem;
+		}
+}
+
+Queue*& linkUpdate(Queue*& first, Queue*& elem)
+{
+	return (!first->prev) ? elem->next : elem->prev;
+}
+
+Queue*& reverseLinkUpdate(Queue*& first, Queue*& elem)
+{
+	return (first->prev) ? elem->next : elem->prev;
+}
+
+void garbageCollector(Queue* &d_elem)
+{
+	Queue* link = NULL;
+	while (d_elem)
+	{
+		link = d_elem->next;
+		delete d_elem;
+		d_elem = link;
 	}
 }
 
