@@ -11,10 +11,8 @@ Queue*& reverseLinkUpdate(Queue*&, Queue*&);
 void linkPart(Queue* const &, Queue*&, Queue*&, Queue*&);
 void createNew( Queue*&, Queue*&, int);
 void showStack(Queue*);
-void displayOrder(Queue*&, Queue*&);
 void delEvery2(Queue*, Queue*&, Queue*&);
 void garbageCollector(Queue*&);
-//void test(int*&);
 
 const char CONF_EXIT[] = " Вы уверены, что хотите выйти?";
 const char MENU_INFO[] = "	 Добро пожаловать!\n	Что вы хотите сделать?\n 1) Вывести список \n 2) Добавить новые элементы\n 3) Удалить каждый 2 элемент\n ESC-назад";
@@ -41,18 +39,11 @@ void main()
 	system("pause");
 }
 
-//void test(int *&link)
-//{
-//	int a = 9;
-//	link = &a;
-//}
-
 void menu()
 {
 	Queue* begin = NULL, *end = NULL;
 	bool exit_flag = false;
 	char switcher = NULL;
-	//test(order(begin, end));
 	while (exit_flag == false)
 	{
 		system("cls");
@@ -78,6 +69,7 @@ void menu()
 			system("cls");
 			cout << INPUT_AMT << endl;
 			int num = getDouble(1);
+			while (num < 0) num = getDouble(num);
 			createNew(begin, end, num);
 			break;
 		}
@@ -138,7 +130,7 @@ void showStack(Queue* begin)
 
 void createNew(Queue*& begin, Queue*& end, int num)
 {
-	Queue* n_elem = NULL, * choise = NULL;
+	Queue* n_elem = NULL;
 	for (int i = 0; i < num; i++)
 	{
 		n_elem = new Queue;
@@ -149,8 +141,9 @@ void createNew(Queue*& begin, Queue*& end, int num)
 		else
 		{
 			cout << endl << INPUT_TO << endl;
-			choise = order(begin, end);
-			(!choise->prev) ? linkPart(n_elem, n_elem->next, choise, choise->prev) : linkPart(n_elem, n_elem->prev, choise, choise->next);
+			char switcher = _getch();
+			while (switcher < '1' || switcher > '2') switcher = _getch();
+			(switcher == '1') ? linkPart(n_elem, n_elem->next, begin, begin->prev) : linkPart(n_elem, n_elem->prev, end, end->next);
 		}
 	}
 }
@@ -163,10 +156,16 @@ void delEvery2(Queue* start, Queue*& begin, Queue*& end)
 		while (elem)
 		{
 			next_elem = linkUpdate(start, elem);
-			next_next_elem = linkUpdate(start, next_elem);
 			if (((i % 2) != 0) && (next_elem))
 			{
-				reverseLinkUpdate(start, next_next_elem) = elem;
+				next_next_elem = linkUpdate(start, next_elem);
+				if (next_next_elem)
+					reverseLinkUpdate(start, next_next_elem) = elem;
+				else
+					if (start != end)
+						end = elem;
+					else
+						begin = elem;
 				linkUpdate(start, elem) = next_next_elem;
 				d_elem = next_elem;
 				next_elem= next_next_elem;
@@ -175,7 +174,6 @@ void delEvery2(Queue* start, Queue*& begin, Queue*& end)
 			}
 			elem = next_elem;
 			i++;
-			if (!next_elem) (!start->prev) ? end = elem : begin = elem;
 		}
 }
 
@@ -273,13 +271,17 @@ double getDouble(int mode) //1-int, 2-double
 				}
 				else
 				{
-					sign_flag = false;
-					sign = 1;
-					cout << '\b' << " " << '\b';
+					if (sign_flag == true)
+					{
+						sign_flag = false;
+						sign = 1;
+						cout << '\b' << " " << '\b';
+					}
 				}
 				break;
 			}
-			case'\r': break_flag = true;
+			case'\r': 
+				if (counter>0) break_flag = true;
 			default:
 				break;
 			}
