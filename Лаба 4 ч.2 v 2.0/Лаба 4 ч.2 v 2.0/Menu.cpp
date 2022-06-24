@@ -11,15 +11,15 @@ int menu(const char head[], const char* const menu_point[])
 	while (true)
 	{
 		system("cls");
-		cout << head << endl << endl;
+		printf("%s\n\n", head);
 		for (int i = 0; i < points_amt; i++)
 		{
 			if (i == choise)
 			{
-				cout << '>' << "\033[32m" << menu_point[i] << "\033[0m" << '<' << endl;
+				printf(">\033[32m %s\033[0m<\n", menu_point[i]);
 				continue;
 			}
-			cout << " " << menu_point[i] << endl;
+			printf(" %s\n", menu_point[i]);
 		}
 		exit_catcher = NULL;
 		while (exit_catcher != -32)

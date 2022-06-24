@@ -12,7 +12,7 @@ void outputSymbol(char*& line, char symbol, int& counter, int i, int& line_size)
 		line_size++;
 	}
 	line[counter] = symbol;
-	cout << symbol;
+	printf("%c", symbol);
 	counter += i;
 }
 
@@ -34,7 +34,7 @@ char* getNumString(char*& num, int& sign)
 			if ((sign>0) && (counter == 0))
 			{
 				sign = -1;
-				cout << '-';
+				printf("-");
 			}
 			break;
 		}
@@ -56,14 +56,14 @@ char* getNumString(char*& num, int& sign)
 				if (point_flag == true && num[counter - 1] == '.')
 					point_flag = false;
 				outputSymbol(num, '\0', --counter, 0, num_size);
-				cout << '\b' << " " << '\b';
+				printf("\b \b");
 			}
 			else
 			{
 				if (sign < 0)
 				{
 					sign = 1;
-					cout << '\b' << " " << '\b';
+					printf("\b \b");
 				}
 			}
 			break;
@@ -84,8 +84,6 @@ double getDouble(const char message[])
 		int counter = 0, point_pos = 0, sign = 1;
 		char* num = new char[2]{ '\0' };
 		double fin_num = 0;
-
-		
 		num = getNumString(num, sign);
 		while (num[counter] != '\0')
 		{
@@ -103,11 +101,10 @@ double getDouble(const char message[])
 		delete[]num;
 		if (isfinite(fin_num) != 0)
 		{
-			cout << endl;
+			printf("\n");
 			return fin_num * sign;
 		}
-		cout << endl << ERROR << endl;
-		cout << message;
+		printf("\n%s\n%s", ERROR, message);
 	}
 }
 
@@ -133,18 +130,18 @@ int getInt(const char message[])
 		delete[]num;
 		if (point_pos > 0)
 		{
-			cout << endl << INT_ERROR << endl;
+			printf("\n%s\n", INT_ERROR);
 			system("pause");
 			system("cls");
-			cout << message;
+			printf("%s", message);
 			continue;
 		}
 		if (isfinite(fin_num) != 0)
 		{
-			cout << endl;
+			printf("\n");
 			return fin_num * sign;
 		}
-		cout << endl << ERROR << endl;
+		printf("\n%s\n", ERROR);
 	}
 }
 
@@ -165,7 +162,7 @@ char*& getExpression()
 		symbol = _getch();
 		if (error_flag) for (int i = 0; i < 22; i++)
 		{
-			cout << '\b' << ' ' << '\b';
+			printf("\b \b");
 			error_flag = false;
 		}
 		switch (symbol)
@@ -175,12 +172,12 @@ char*& getExpression()
 			if (counter > 0 && open_counter == close_counter && operation_flag == false) break_flag = true;
 			else
 			{
-				cout << ERROR_EXPRESSION;
+				printf("%s", ERROR_EXPRESSION);
 				error_flag = true;
 			}
 			break;
 		}
-		case'/':case'+':case'-':case'*':
+		case'/':case'+':case'-':case'*':case'^':
 		{
 			if (operation_flag == false)
 			{
@@ -191,14 +188,20 @@ char*& getExpression()
 		}
 		case '(':
 		{
-			open_counter++;
-			outputSymbol(expression, symbol, counter, 1, expression_size);
+			if (operation_flag == true)
+			{
+				open_counter++;
+				outputSymbol(expression, symbol, counter, 1, expression_size);
+			}
 			break;
 		}
 		case ')':
 		{
+			if (operation_flag == false && close_counter < open_counter)
+			{ 
 			close_counter++;
 			outputSymbol(expression, symbol, counter, 1, expression_size);
+			}
 			break;
 		}
 		case '\b':
@@ -212,7 +215,7 @@ char*& getExpression()
 
 				case')':close_counter--; break;
 
-				case'/':case'+':case'-':case'*': operation_flag = false; break;
+				case'/':case'+':case'-':case'*':case'^': operation_flag = false; break;
 
 				default:
 					break;
@@ -220,7 +223,7 @@ char*& getExpression()
 				if (operation_flag == false && (expression[counter - 1] >= 'a' && expression[counter - 1] <= 'z'))
 					operation_flag = true;
 				outputSymbol(expression, '\0', --counter, 0, expression_size);
-				cout << '\b' << " " << '\b';
+				printf("\b \b");
 			}
 			break;
 		}

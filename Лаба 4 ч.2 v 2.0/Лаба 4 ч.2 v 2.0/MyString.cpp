@@ -15,7 +15,7 @@ char* lineResize(char*& line, int additional_cells)
 	if (new_size >= 0) re_line = new char[new_size + 1]{ '\0' };
 	else
 	{
-		cout << "ERROR LineResize: Line size < 1.";
+		printf("ERROR LineResize: Line size < 1.");
 		return NULL;
 	}
 

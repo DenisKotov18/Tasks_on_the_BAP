@@ -10,6 +10,8 @@ const char ENTERING_NUM[] = "Введите число ";
 
 const char ERROR_NULL[] = "\033[31mОшибка!\033[0m Деление на 0";
 
+const char ERROR_INF[] = "\033[31mОшибка!\033[0m Результат выходит за диапазон допустимых значений! Попробуйте снова";
+
 const char RESULT[] = "Результат вычислений = ";
 
 const char MAIN_MENU_HEAD_1[] = "Текущее выражение: ";

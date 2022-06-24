@@ -48,7 +48,7 @@ void main()
 void mainMenu()
 {
 	system("cls");
-	cout << ENTERING_RPN << endl;
+	printf("%s\n", ENTERING_RPN);
 	char* head = new char[1]{ '\0' },
 		*line = getExpression(),
 		* converted_line = convert(line);
@@ -98,21 +98,20 @@ char* convert(const char original_line[])
 			begin = delOne(begin);
 			break;
 		}
-		case'+':case'-':case'*':case'/':
+		case'+':case'-':case'*':case'/':case'^':
 		{
 			if (begin != NULL)
 			{
-				char symbol_prior = getPrior(original_line[counter_original]);
+				int symbol_prior = getPrior(original_line[counter_original]);
 				if (symbol_prior <= getPrior(begin->symbol))
 				{
-					while (symbol_prior <= getPrior(begin->symbol))
+					while (begin != NULL && symbol_prior <= getPrior(begin->symbol))
 					{
 						converted_line[counter_converted] = getChar(begin);
 						counter_converted++;
 					}
 				}
 				addChar(begin, original_line[counter_original]);
-
 			}
 			else begin = addChar(begin, original_line[counter_original]);
 			break;
@@ -138,8 +137,9 @@ int getPrior(const char& a)
 	case '*': case '/': return 3;
 	case '-': case '+': return 2;
 	case '(': return 1;
+	default: return 0;
 	}
-	return 0;
+	
 }
 
 Stack* addChar(Stack*& begin, const char& symbol)
@@ -214,14 +214,14 @@ void calculation(const char line[], const char* head)
 			if (first != 0)begin = addNum(begin, action(second, first, line[counter]));
 			else
 			{
-				cout << endl << ERROR_NULL << endl;
+				printf("\n%s\n", ERROR_NULL);
 				delete[]symbols;
 				delete[]numbers;
 				return;
 			}
 			break;
 		}
-			case'+':case'-':case'*':
+		case'+':case'-':case'*':case'^':
 			{
 				begin = addNum(begin, action(getNum(begin), getNum(begin), line[counter]));
 				break;
@@ -232,7 +232,7 @@ void calculation(const char line[], const char* head)
 				if (repeat_pos != -1) begin = addNum(begin, numbers[repeat_pos]);
 				else
 				{
-					cout << endl << ENTERING_NUM << line[counter] << ": ";
+					printf("\n%s%c: ", ENTERING_NUM, line[counter]);
 					begin = addNum(begin, getDouble(ENTERING_NUM));
 					lineResize(symbols, 1);
 					symbols[repeat_counter] = line[counter];
@@ -244,7 +244,8 @@ void calculation(const char line[], const char* head)
 		}
 		counter++;
 	}
-	cout << RESULT << getNum(begin) << endl;
+	double result = getNum(begin);
+	(isfinite(result)) ? printf("%s%g\n",RESULT, result) : printf("%s\n", ERROR_INF);
 	delete[]symbols;
 	delete[]numbers;
 }
